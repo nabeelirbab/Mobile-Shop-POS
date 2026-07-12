@@ -62,8 +62,9 @@ export function printReceiptHtml(sale: any, settings: any) {
     line-height: 1.45;
     color: #000;
     background: #fff;
-    width: 100%;
+    width: 76mm;
     max-width: 100%;
+    margin: 0 auto;
     overflow: hidden;
   }
   .center   { text-align: center; }
@@ -73,7 +74,7 @@ export function printReceiptHtml(sale: any, settings: any) {
   .solid    { border-top: 2px solid #000;  margin: 5px 0; }
 
   /* logo */
-  .logo { height: 60px; max-width: 80px; object-fit: contain; display: block; margin: 0 auto 4px; }
+  .logo { height: 90px; max-width: 120px; object-fit: contain; display: block; margin: 0 auto 4px; }
 
   /* store header */
   .store-name { font-size: 14px; font-weight: bold; }
