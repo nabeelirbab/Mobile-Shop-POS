@@ -52,8 +52,8 @@ export function printReceiptHtml(sale: any, settings: any) {
   @page {
     margin-top: 4mm;
     margin-bottom: 4mm;
-    margin-left: 2mm;
-    margin-right: 2mm;
+    margin-left: 0;
+    margin-right: 0;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -62,10 +62,9 @@ export function printReceiptHtml(sale: any, settings: any) {
     line-height: 1.45;
     color: #000;
     background: #fff;
-    width: 76mm;
-    max-width: 100%;
-    margin: 0 auto;
-    overflow: hidden;
+    width: 100%;
+    padding: 0 2mm;
+    box-sizing: border-box;
   }
   .center   { text-align: center; }
   .right    { text-align: right; }
