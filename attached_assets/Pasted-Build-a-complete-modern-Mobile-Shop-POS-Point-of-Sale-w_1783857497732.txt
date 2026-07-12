@@ -1,0 +1,342 @@
+Build a complete modern Mobile Shop POS (Point of Sale) web application.
+
+Tech Stack:
+- Frontend: React + Vite
+- Backend: Node.js + Express
+- Database: SQLite (better-sqlite3)
+- Styling: Tailwind CSS
+- Icons: Lucide React
+- State: React Context
+- Printing: HTML/CSS + window.print()
+- Barcode Support
+- Responsive design for Desktop, Tablet and Mobile
+
+=====================================
+MAIN FEATURES
+=====================================
+
+1. Dashboard
+- Today's Sales
+- Monthly Sales
+- Profit
+- Total Products
+- Total Customers
+- Low Stock Alert
+- Recent Sales
+
+2. Product Management
+Fields:
+- Barcode
+- Product Name
+- Brand
+- Model
+- Category
+- Color
+- IMEI (optional)
+- Purchase Price
+- Sale Price
+- Stock Qty
+- Supplier
+- Warranty
+- Image Upload
+- Notes
+
+Functions:
+- Add Product
+- Edit Product
+- Delete Product
+- Search Product
+- Barcode Search
+- Filter by Category
+- Stock Alert
+
+3. Categories
+- Add/Edit/Delete
+- Mobile Phones
+- Accessories
+- Chargers
+- Headphones
+- Covers
+- Power Banks
+- Smart Watches
+- Others
+
+4. Customers
+Fields:
+- Name
+- Mobile
+- Address
+- Email
+- Balance
+- Notes
+
+Functions:
+- Add
+- Edit
+- Delete
+- Search
+- Customer Purchase History
+
+5. Suppliers
+- CRUD
+- Purchase History
+
+6. Purchase Module
+- Purchase Invoice
+- Supplier Selection
+- Add Products
+- Update Stock Automatically
+
+7. Sales Module
+Features:
+- Barcode Scanner Support
+- Product Search
+- Add Multiple Products
+- Quantity Update
+- Discount %
+- Discount Amount
+- Tax
+- Cash Payment
+- Card Payment
+- EasyPaisa
+- JazzCash
+- Credit Sale
+
+Automatically Calculate:
+Subtotal
+Discount
+Tax
+Grand Total
+Received Amount
+Return Amount
+
+8. Sales History
+- Search by Invoice
+- Search by Customer
+- Date Filter
+- Print Invoice
+- Delete Sale
+- Return Sale
+
+9. Expense Module
+- Shop Rent
+- Electricity
+- Internet
+- Salary
+- Misc
+
+10. Reports
+- Daily Sales
+- Weekly Sales
+- Monthly Sales
+- Yearly Sales
+- Profit Report
+- Expense Report
+- Purchase Report
+- Stock Report
+- Best Selling Products
+
+Charts using Chart.js
+
+=====================================
+USER LOGIN
+=====================================
+
+Role Based Authentication
+
+Admin
+Cashier
+
+Admin can:
+- Everything
+
+Cashier:
+- Sales
+- Customers
+- Print Bills
+
+=====================================
+SETTINGS
+=====================================
+
+Store Information
+
+Store Logo
+Store Name
+Owner Name
+Address
+Phone
+WhatsApp
+Email
+NTN (optional)
+Footer Message
+
+=====================================
+COIL RECEIPT PRINTING
+=====================================
+
+Create thermal receipt for:
+58mm
+80mm
+
+Receipt Format:
+
+------------------------------------------------
+              SHOP LOGO
+          ABC MOBILE SHOP
+      Main Bazar Lahore Pakistan
+      Mobile: 03001234567
+
+Invoice #: INV-00001
+
+Date: 12/07/2026
+Time: 02:35 PM
+
+Cashier: Admin
+
+Customer:
+Ali Ahmad
+03001234567
+
+------------------------------------------------
+
+Product                 Qty    Price    Total
+
+Samsung A15              1     42000    42000
+Type-C Cable             2       600     1200
+Back Cover               1       500      500
+
+------------------------------------------------
+
+Subtotal                Rs 43700
+Discount                Rs   700
+Tax                     Rs     0
+
+Grand Total             Rs 43000
+
+Paid                    Rs 45000
+Return                  Rs  2000
+
+Payment:
+Cash
+
+------------------------------------------------
+
+Thank You For Shopping
+
+Visit Again
+
+Software by Mobile Shop POS
+
+------------------------------------------------
+
+Automatically fit paper width.
+
+Print logo.
+
+No page margins.
+
+Auto open print dialog.
+
+Proper thermal receipt CSS.
+
+=====================================
+BARCODE
+=====================================
+
+Generate barcode
+
+Print barcode labels
+
+Scan barcode from USB Scanner
+
+=====================================
+BACKUP
+=====================================
+
+Export Database
+
+Import Database
+
+=====================================
+EXTRAS
+=====================================
+
+Dark Mode
+
+Light Mode
+
+Keyboard Shortcuts
+
+Invoice Number Auto Increment
+
+Responsive Layout
+
+Professional UI
+
+Toast Notifications
+
+Confirmation Dialogs
+
+Loading Indicators
+
+=====================================
+DATABASE TABLES
+=====================================
+
+users
+products
+customers
+suppliers
+sales
+sale_items
+purchases
+purchase_items
+expenses
+categories
+settings
+
+=====================================
+API
+=====================================
+
+REST API
+
+/auth
+/products
+/customers
+/suppliers
+/sales
+/purchases
+/reports
+/settings
+
+=====================================
+PROJECT STRUCTURE
+=====================================
+
+client/
+server/
+database/
+public/
+uploads/
+
+=====================================
+DELIVERABLES
+=====================================
+
+Generate the complete project with:
+
+- Clean folder structure
+- Complete source code
+- Database schema
+- Seed data
+- Authentication
+- Responsive UI
+- Professional Dashboard
+- Thermal bill printing
+- README.md
+- Installation instructions
+- Production-ready code
+- No placeholders or dummy pages
+- Fully working application
