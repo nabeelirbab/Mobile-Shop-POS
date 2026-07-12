@@ -6,185 +6,188 @@ interface ThermalReceiptProps {
   onClose: () => void;
 }
 
-function fmtCurrency(val: number | string, currency = "Rs") {
+function fmt(val: number | string, currency = "Rs") {
   const n = Number(val) || 0;
   return `${currency} ${n.toLocaleString("en-PK", { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
 }
 
 export function printReceiptHtml(sale: any, settings: any) {
-  const storeName = settings?.store_name || "Umair Mobile Gallery UMG";
-  const address = settings?.address || "Street no 1 Mor Sambrial";
-  const phone = settings?.phone || "03349999602";
-  const whatsapp = settings?.whatsapp || "";
-  const footerMessage = settings?.footer_message || "Thank You For Shopping! Visit Again.";
-  const currency = settings?.currency || "Rs";
-  const is80mm = settings?.receipt_size === "80mm";
-  const paperWidth = is80mm ? "272px" : "196px";
+  const storeName  = settings?.store_name    || "Umair Mobile Gallery UMG";
+  const address    = settings?.address       || "Street no 1 Mor Sambrial";
+  const phone      = settings?.phone         || "03349999602";
+  const whatsapp   = settings?.whatsapp      || "";
+  const footer     = settings?.footer_message || "Thank You For Shopping! Visit Again.";
+  const currency   = settings?.currency      || "Rs";
 
-  // Logo: base64 from settings, or fallback to static file
-  let logoHtml = "";
-  if (settings?.logo) {
-    const src = settings.logo.startsWith("data:") || settings.logo.startsWith("http")
-      ? settings.logo
-      : `${window.location.origin}${settings.logo}`;
-    logoHtml = `<img src="${src}" alt="logo" style="height:64px;max-width:100%;object-fit:contain;margin-bottom:6px;" />`;
-  } else {
-    logoHtml = `<img src="${window.location.origin}/umg-logo.jpg" alt="UMG" style="height:64px;max-width:100%;object-fit:contain;margin-bottom:6px;" />`;
-  }
+  const logoSrc = settings?.logo
+    ? (settings.logo.startsWith("data:") || settings.logo.startsWith("http")
+        ? settings.logo
+        : `${window.location.origin}${settings.logo}`)
+    : `${window.location.origin}/umg-logo.jpg`;
 
-  const itemsHtml = sale.items
-    .map(
-      (item: any) => `
-      <tr>
-        <td colspan="4" style="text-align:left;padding-top:6px;font-weight:bold;border-top:1px dotted #000;">${item.product_name}</td>
-      </tr>
-      <tr>
-        <td style="text-align:left;">${item.quantity} x ${fmtCurrency(item.unit_price, currency)}</td>
-        <td></td>
-        <td style="text-align:right;">${item.discount > 0 ? "Disc: -" + fmtCurrency(item.discount, currency) : ""}</td>
-        <td style="text-align:right;font-weight:bold;">${fmtCurrency(item.total, currency)}</td>
-      </tr>`
-    )
-    .join("");
+  // Items — two rows per line item so nothing wraps off-edge
+  const itemsHtml = sale.items.map((item: any) => `
+    <tr><td colspan="2" class="item-name">${item.product_name}</td></tr>
+    <tr>
+      <td class="item-detail">${item.quantity} x ${fmt(item.unit_price, currency)}${item.discount > 0 ? `  Disc:-${fmt(item.discount, currency)}` : ""}</td>
+      <td class="item-total">${fmt(item.total, currency)}</td>
+    </tr>`).join("");
 
-  const subtotal = Number(sale.subtotal) || 0;
-  const discountAmt = Number(sale.discount_amount) || 0;
-  const discountPct = Number(sale.discount_percent) || 0;
-  const taxAmt = Number(sale.tax_amount) || 0;
-  const taxPct = Number(sale.tax_percent) || 0;
-  const grandTotal = Number(sale.grand_total) || 0;
-  const paidAmount = Number(sale.paid_amount) || 0;
-  const returnAmount = Number(sale.return_amount) || 0;
-  const payMethod = (sale.payment_method || "cash").toUpperCase();
+  const subtotal    = Number(sale.subtotal)        || 0;
+  const discAmt     = Number(sale.discount_amount) || 0;
+  const discPct     = Number(sale.discount_percent)|| 0;
+  const taxAmt      = Number(sale.tax_amount)      || 0;
+  const taxPct      = Number(sale.tax_percent)     || 0;
+  const grandTotal  = Number(sale.grand_total)     || 0;
+  const paidAmount  = Number(sale.paid_amount)     || 0;
+  const changeAmt   = Number(sale.return_amount)   || 0;
+  const payMethod   = (sale.payment_method || "cash").toUpperCase();
 
-  const html = `<!DOCTYPE html>
+  return `<!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <title>Receipt ${sale.invoice_no}</title>
-  <style>
-    @page { margin: 3mm; }
-    * { box-sizing: border-box; }
-    body {
-      font-family: 'Courier New', Courier, monospace;
-      margin: 0; padding: 4px;
-      width: ${paperWidth};
-      font-size: 12px;
-      line-height: 1.4;
-      color: #000 !important;
-      background: #fff;
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
-    }
-    * { color: #000 !important; }
-    .center { text-align: center; }
-    .right { text-align: right; }
-    .left { text-align: left; }
-    .bold { font-weight: bold; }
-    .divider { border: none; border-top: 1px dashed #000; margin: 5px 0; }
-    table { width: 100%; border-collapse: collapse; }
-    td, th { padding: 1px 2px; vertical-align: top; }
-    .store-name { font-size: ${is80mm ? "17px" : "14px"}; font-weight: bold; letter-spacing: 1px; }
-    .store-sub { font-size: 11px; margin: 2px 0; }
-    .summary-label { font-weight: normal; }
-    .highlight-box {
-      border: 2px solid #000;
-      padding: 4px 6px; margin: 4px 0;
-      font-size: ${is80mm ? "15px" : "13px"};
-      font-weight: bold; text-align: center;
-      letter-spacing: 1px;
-    }
-    .paid-section { border: 1px solid #000; padding: 4px 6px; margin: 2px 0; }
-  </style>
+<meta charset="utf-8">
+<title>Receipt</title>
+<style>
+  @page {
+    margin-top: 4mm;
+    margin-bottom: 4mm;
+    margin-left: 2mm;
+    margin-right: 2mm;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 12px;
+    line-height: 1.45;
+    color: #000;
+    background: #fff;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+  }
+  .center   { text-align: center; }
+  .right    { text-align: right; }
+  .bold     { font-weight: bold; }
+  .dash     { border-top: 1px dashed #000; margin: 5px 0; }
+  .solid    { border-top: 2px solid #000;  margin: 5px 0; }
+
+  /* logo */
+  .logo { height: 60px; max-width: 80px; object-fit: contain; display: block; margin: 0 auto 4px; }
+
+  /* store header */
+  .store-name { font-size: 14px; font-weight: bold; }
+  .store-info { font-size: 11px; }
+
+  /* meta table (date / invoice / cashier) */
+  table { width: 100%; border-collapse: collapse; }
+  td    { padding: 1px 0; vertical-align: top; font-size: 12px; }
+  .lbl  { width: 45%; }
+  .val  { text-align: right; }
+
+  /* items */
+  .item-name   { font-weight: bold; font-size: 12px; padding-top: 5px; border-top: 1px dotted #000; }
+  .item-detail { font-size: 11px; padding-left: 4px; width: 70%; }
+  .item-total  { text-align: right; font-weight: bold; font-size: 12px; white-space: nowrap; }
+
+  /* totals */
+  .tot-lbl { width: 55%; }
+  .tot-val { text-align: right; white-space: nowrap; }
+
+  /* grand total box */
+  .grand-box {
+    border: 2px solid #000;
+    padding: 3px 6px;
+    margin: 5px 0;
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  /* paid box */
+  .paid-box {
+    border: 1px solid #000;
+    padding: 3px 6px;
+    margin: 3px 0;
+  }
+  .paid-row { display: flex; justify-content: space-between; }
+  .paid-row .p-val { font-weight: bold; white-space: nowrap; }
+
+  .footer { font-size: 11px; text-align: center; margin-top: 8px; line-height: 1.5; }
+  .powered{ font-size: 10px; text-align: center; margin-top: 3px; }
+</style>
 </head>
 <body>
-  <div class="center">
-    ${logoHtml}
-    <div class="store-name">${storeName}</div>
-    ${address ? `<div class="store-sub">${address}</div>` : ""}
-    ${phone ? `<div class="store-sub">Tel: ${phone}${whatsapp ? " | WA: " + whatsapp : ""}</div>` : ""}
-  </div>
 
-  <hr class="divider" />
+<!-- HEADER -->
+<div class="center">
+  <img src="${logoSrc}" class="logo" alt="logo" />
+  <div class="store-name">${storeName}</div>
+  ${address  ? `<div class="store-info">${address}</div>` : ""}
+  ${phone    ? `<div class="store-info">Tel: ${phone}${whatsapp ? " | WA: " + whatsapp : ""}</div>` : ""}
+</div>
 
-  <table>
-    <tr><td class="left summary-label">Date:</td><td class="right">${new Date(sale.created_at || Date.now()).toLocaleString("en-PK")}</td></tr>
-    <tr><td class="left summary-label">Invoice#:</td><td class="right bold">${sale.invoice_no}</td></tr>
-    <tr><td class="left summary-label">Cashier:</td><td class="right">${sale.cashier_name || ""}</td></tr>
-    ${sale.customer_name ? `<tr><td class="left summary-label">Customer:</td><td class="right">${sale.customer_name}</td></tr>` : ""}
-    <tr><td class="left summary-label">Payment:</td><td class="right">${payMethod}</td></tr>
-  </table>
+<div class="dash"></div>
 
-  <hr class="divider" />
+<!-- META -->
+<table>
+  <tr><td class="lbl">Date:</td>     <td class="val">${new Date(sale.created_at || Date.now()).toLocaleString("en-PK")}</td></tr>
+  <tr><td class="lbl">Invoice:</td>  <td class="val bold">${sale.invoice_no}</td></tr>
+  <tr><td class="lbl">Cashier:</td>  <td class="val">${sale.cashier_name || ""}</td></tr>
+  ${sale.customer_name ? `<tr><td class="lbl">Customer:</td><td class="val">${sale.customer_name}</td></tr>` : ""}
+  <tr><td class="lbl">Payment:</td>  <td class="val">${payMethod}</td></tr>
+</table>
 
-  <table>
-    <thead>
-      <tr>
-        <th class="left" style="border-bottom:1px solid #000;">Item</th>
-        <th></th>
-        <th class="right" style="border-bottom:1px solid #000;">Disc</th>
-        <th class="right" style="border-bottom:1px solid #000;">Total</th>
-      </tr>
-    </thead>
-    <tbody>
-      ${itemsHtml}
-    </tbody>
-  </table>
+<div class="dash"></div>
 
-  <hr class="divider" />
+<!-- ITEMS -->
+<table>${itemsHtml}</table>
 
-  <table>
-    <tr>
-      <td class="left summary-label">Subtotal:</td>
-      <td class="right">${fmtCurrency(subtotal, currency)}</td>
-    </tr>
-    ${discountAmt > 0 ? `<tr><td class="left summary-label">Discount${discountPct > 0 ? " (" + discountPct + "%)" : ""}:</td><td class="right" style="color:#c00;">- ${fmtCurrency(discountAmt, currency)}</td></tr>` : ""}
-    ${taxAmt > 0 ? `<tr><td class="left summary-label">Tax (${taxPct}%):</td><td class="right">${fmtCurrency(taxAmt, currency)}</td></tr>` : ""}
-  </table>
+<div class="dash"></div>
 
-  <div class="highlight-box">
-    TOTAL: ${fmtCurrency(grandTotal, currency)}
-  </div>
+<!-- SUBTOTALS -->
+<table>
+  <tr><td class="tot-lbl">Subtotal:</td>              <td class="tot-val">${fmt(subtotal, currency)}</td></tr>
+  ${discAmt > 0 ? `<tr><td class="tot-lbl">Discount${discPct > 0 ? " (" + discPct + "%)" : ""}:</td><td class="tot-val">- ${fmt(discAmt, currency)}</td></tr>` : ""}
+  ${taxAmt  > 0 ? `<tr><td class="tot-lbl">Tax (${taxPct}%):</td><td class="tot-val">${fmt(taxAmt, currency)}</td></tr>` : ""}
+</table>
 
-  <div class="paid-section">
-    <table>
-      <tr>
-        <td class="left bold">Cash Paid (${payMethod}):</td>
-        <td class="right bold">${fmtCurrency(paidAmount, currency)}</td>
-      </tr>
-      ${returnAmount > 0 ? `<tr><td class="left summary-label">Change:</td><td class="right bold" style="color:#080;">${fmtCurrency(returnAmount, currency)}</td></tr>` : ""}
-    </table>
-  </div>
+<div class="solid"></div>
 
-  <hr class="divider" />
+<!-- GRAND TOTAL -->
+<div class="grand-box">
+  <span>TOTAL:</span>
+  <span>${fmt(grandTotal, currency)}</span>
+</div>
 
-  <div class="center" style="font-size:11px;margin-top:8px;line-height:1.6;">
-    ${footerMessage.replace(/\n/g, "<br>")}
-  </div>
-  <div class="center" style="font-size:10px;color:#666;margin-top:4px;">
-    *** Powered by UMG POS ***
-  </div>
+<!-- PAID / CHANGE -->
+<div class="paid-box">
+  <div class="paid-row"><span>Cash Paid (${payMethod}):</span><span class="p-val">${fmt(paidAmount, currency)}</span></div>
+  ${changeAmt > 0 ? `<div class="paid-row"><span>Change:</span><span class="p-val">${fmt(changeAmt, currency)}</span></div>` : ""}
+</div>
 
-  <script>
-    window.onload = function() {
-      window.print();
-      window.onafterprint = function() { window.close(); };
-    };
-  </script>
+<div class="dash"></div>
+
+<div class="footer">${footer.replace(/\n/g, "<br>")}</div>
+<div class="powered">*** UMG POS ***</div>
+
+<script>
+  window.onload = function() {
+    window.print();
+    window.onafterprint = function() { window.close(); };
+  };
+</script>
 </body>
 </html>`;
-  return html;
 }
 
 export function printReceipt(sale: any, settings: any) {
   const html = printReceiptHtml(sale, settings);
-  const w = window.open("", "_blank", "width=420,height=700,scrollbars=yes");
-  if (w) {
-    w.document.write(html);
-    w.document.close();
-  }
+  const w = window.open("", "_blank", "width=380,height=650,scrollbars=yes");
+  if (w) { w.document.write(html); w.document.close(); }
 }
 
-export function ThermalReceipt({ sale, settings, onClose }: ThermalReceiptProps) {
-  return null; // purely programmatic via printReceipt()
+export function ThermalReceipt(_props: ThermalReceiptProps) {
+  return null;
 }
