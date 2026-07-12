@@ -19,7 +19,7 @@ export function printReceiptHtml(sale: any, settings: any) {
   const footerMessage = settings?.footer_message || "Thank You For Shopping! Visit Again.";
   const currency = settings?.currency || "Rs";
   const is80mm = settings?.receipt_size === "80mm";
-  const paperWidth = is80mm ? "302px" : "216px";
+  const paperWidth = is80mm ? "272px" : "196px";
 
   // Logo: base64 from settings, or fallback to static file
   let logoHtml = "";
@@ -36,12 +36,12 @@ export function printReceiptHtml(sale: any, settings: any) {
     .map(
       (item: any) => `
       <tr>
-        <td colspan="4" style="text-align:left;padding-top:6px;font-weight:bold;border-top:1px dotted #aaa;">${item.product_name}</td>
+        <td colspan="4" style="text-align:left;padding-top:6px;font-weight:bold;border-top:1px dotted #000;">${item.product_name}</td>
       </tr>
       <tr>
-        <td style="text-align:left;color:#555;">${item.quantity} x ${fmtCurrency(item.unit_price, currency)}</td>
+        <td style="text-align:left;">${item.quantity} x ${fmtCurrency(item.unit_price, currency)}</td>
         <td></td>
-        <td style="text-align:right;color:#c00;">${item.discount > 0 ? "-" + fmtCurrency(item.discount, currency) : ""}</td>
+        <td style="text-align:right;">${item.discount > 0 ? "Disc: -" + fmtCurrency(item.discount, currency) : ""}</td>
         <td style="text-align:right;font-weight:bold;">${fmtCurrency(item.total, currency)}</td>
       </tr>`
     )
@@ -63,37 +63,38 @@ export function printReceiptHtml(sale: any, settings: any) {
   <meta charset="utf-8">
   <title>Receipt ${sale.invoice_no}</title>
   <style>
-    @page { margin: 4mm; }
+    @page { margin: 3mm; }
     * { box-sizing: border-box; }
     body {
       font-family: 'Courier New', Courier, monospace;
-      margin: 0; padding: 6px;
+      margin: 0; padding: 4px;
       width: ${paperWidth};
       font-size: 12px;
-      line-height: 1.35;
-      color: #000;
+      line-height: 1.4;
+      color: #000 !important;
       background: #fff;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
     }
+    * { color: #000 !important; }
     .center { text-align: center; }
     .right { text-align: right; }
     .left { text-align: left; }
     .bold { font-weight: bold; }
-    .divider { border: none; border-top: 1px dashed #555; margin: 6px 0; }
-    .divider-solid { border: none; border-top: 2px solid #000; margin: 6px 0; }
+    .divider { border: none; border-top: 1px dashed #000; margin: 5px 0; }
     table { width: 100%; border-collapse: collapse; }
     td, th { padding: 1px 2px; vertical-align: top; }
-    .store-name { font-size: ${is80mm ? "18px" : "15px"}; font-weight: bold; letter-spacing: 1px; }
-    .store-sub { font-size: 11px; color: #333; margin: 2px 0; }
-    .total-row td { font-size: ${is80mm ? "16px" : "14px"}; font-weight: bold; padding: 3px 2px; }
-    .summary-label { color: #444; }
+    .store-name { font-size: ${is80mm ? "17px" : "14px"}; font-weight: bold; letter-spacing: 1px; }
+    .store-sub { font-size: 11px; margin: 2px 0; }
+    .summary-label { font-weight: normal; }
     .highlight-box {
-      background: #000; color: #fff;
+      border: 2px solid #000;
       padding: 4px 6px; margin: 4px 0;
-      font-size: ${is80mm ? "16px" : "14px"};
+      font-size: ${is80mm ? "15px" : "13px"};
       font-weight: bold; text-align: center;
       letter-spacing: 1px;
     }
-    .paid-section { background: #f0f0f0; padding: 4px 6px; margin: 2px 0; }
+    .paid-section { border: 1px solid #000; padding: 4px 6px; margin: 2px 0; }
   </style>
 </head>
 <body>
