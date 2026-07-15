@@ -69,7 +69,7 @@ export function printReceiptHtml(sale: any, settings: any) {
   .dash     { border-top: 1px dashed #000; margin: 4px 0; }
   .solid    { border-top: 2px solid #000;  margin: 4px 0; }
 
-  .logo { height: 100px; max-width: 110px; object-fit: contain; display: block; margin: 0 auto 2px; }
+  .logo { height: 200px; max-width: 200px; object-fit: contain; display: block; margin: 0 auto 2px; }
   .umg-tag  { font-size: 13px; font-weight: bold; letter-spacing: 2px; }
   .store-name { font-size: 15px; font-weight: bold; }
   .store-info { font-size: 10px; }
