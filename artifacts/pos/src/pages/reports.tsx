@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { MainLayout } from "@/components/layout/MainLayout";
-import { useGetSalesReport, useGetProfitReport, useGetBestSellingReport } from "@workspace/api-client-react";
+import { useGetSalesReport, useGetProfitReport, useGetBestSellingReport, useGetSettings } from "@workspace/api-client-react";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -14,6 +15,8 @@ export default function Reports() {
   const { data: salesReport, isLoading: salesLoading } = useGetSalesReport({ period });
   const { data: profitReport, isLoading: profitLoading } = useGetProfitReport();
   const { data: bestSellingReport, isLoading: bestSellingLoading } = useGetBestSellingReport({ limit: 10 });
+  const { data: settings } = useGetSettings();
+  const currency = settings?.currency || "Rs";
 
   return (
     <MainLayout>
@@ -62,7 +65,7 @@ export default function Reports() {
                     <BarChart data={salesReport.data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} />
                       <XAxis dataKey="date" tickFormatter={(val) => formatDate(val)} />
-                      <YAxis tickFormatter={(val) => `Rs ${val / 1000}k`} />
+                      <YAxis tickFormatter={(val) => `${currency} ${val / 1000}k`} />
                       <Tooltip formatter={(value) => formatCurrency(value as number)} labelFormatter={(label) => formatDate(label)} />
                       <Bar dataKey="total_sales" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
                     </BarChart>
@@ -123,7 +126,7 @@ export default function Reports() {
                     <LineChart data={profitReport.data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} />
                       <XAxis dataKey="date" tickFormatter={(val) => formatDate(val)} />
-                      <YAxis tickFormatter={(val) => `Rs ${val / 1000}k`} />
+                      <YAxis tickFormatter={(val) => `${currency} ${val / 1000}k`} />
                       <Tooltip formatter={(value) => formatCurrency(value as number)} labelFormatter={(label) => formatDate(label)} />
                       <Legend />
                       <Line type="monotone" dataKey="revenue" stroke="#8884d8" name="Revenue" strokeWidth={2} />
@@ -147,7 +150,7 @@ export default function Reports() {
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart layout="vertical" data={bestSellingReport} margin={{ top: 5, right: 30, left: 80, bottom: 5 }}>
                         <CartesianGrid strokeDasharray="3 3" horizontal={false} />
-                        <XAxis type="number" tickFormatter={(val) => `Rs ${val / 1000}k`} />
+                        <XAxis type="number" tickFormatter={(val) => `${currency} ${val / 1000}k`} />
                         <YAxis dataKey="product_name" type="category" width={100} tick={{ fontSize: 12 }} />
                         <Tooltip formatter={(value) => formatCurrency(value as number)} />
                         <Bar dataKey="total_revenue" fill="hsl(var(--primary))" name="Revenue" radius={[0, 4, 4, 0]} />

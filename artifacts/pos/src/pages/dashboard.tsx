@@ -1,15 +1,17 @@
 import React from "react";
 import { MainLayout } from "@/components/layout/MainLayout";
-import { useGetDashboard } from "@workspace/api-client-react";
+import { useGetDashboard, useGetSettings } from "@workspace/api-client-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { formatCurrency } from "@/lib/utils";
-import { ShoppingCart, TrendingUp, DollarSign, Package, Users, AlertTriangle } from "lucide-react";
+import { ShoppingCart, TrendingUp, DollarSign, Package, Users, AlertTriangle, Receipt } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 
 export default function Dashboard() {
   const { data: dashboard, isLoading } = useGetDashboard();
+  const { data: settings } = useGetSettings();
+  const currency = settings?.currency || "Rs.";
 
   if (isLoading || !dashboard) {
     return (
@@ -151,5 +153,3 @@ export default function Dashboard() {
   );
 }
 
-// Additional import needed for secondary cards
-import { Receipt } from "lucide-react";
