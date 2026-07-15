@@ -56,7 +56,8 @@ export function printReceiptHtml(sale: any, settings: any) {
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: 'Courier New', Courier, monospace;
-    font-size: 11px;
+    font-size: 12px;
+    font-weight: 700;
     line-height: 1.5;
     color: #000;
     background: #fff;
@@ -72,39 +73,39 @@ export function printReceiptHtml(sale: any, settings: any) {
   .logo { height: 200px; max-width: 200px; object-fit: contain; display: block; margin: 0 auto 2px; }
   .umg-tag    { font-family: Georgia, 'Times New Roman', serif; font-size: 18px; font-weight: bold; letter-spacing: 3px; }
   .store-name { font-family: Georgia, 'Times New Roman', serif; font-size: 17px; font-weight: bold; letter-spacing: 1px; }
-  .store-info { font-size: 10px; }
+  .store-info { font-size: 11px; font-weight: 700; }
 
   /* ---- meta (Date / Invoice / Cashier) ---- */
   .meta { width: 100%; border-collapse: collapse; }
-  .meta td { font-size: 11px; padding: 1px 0; vertical-align: top; }
+  .meta td { font-size: 12px; font-weight: 700; padding: 1px 0; vertical-align: top; }
   .meta .lbl { width: 38%; }
   .meta .val { text-align: right; }
 
   /* ---- items ---- */
   .items { width: 100%; border-collapse: collapse; }
   .items td { padding: 1px 0; vertical-align: top; }
-  .item-name   { font-weight: bold; font-size: 11px; padding-top: 4px; border-top: 1px dotted #000; }
-  .item-detail { font-size: 10px; padding-left: 2px; width: 65%; }
-  .item-amt    { text-align: right; font-weight: bold; font-size: 11px; white-space: nowrap; width: 35%; }
+  .item-name   { font-weight: 900; font-size: 12px; padding-top: 4px; border-top: 1px dotted #000; }
+  .item-detail { font-size: 11px; font-weight: 700; padding-left: 2px; width: 65%; }
+  .item-amt    { text-align: right; font-weight: 900; font-size: 12px; white-space: nowrap; width: 35%; }
 
   /* ---- subtotals ---- */
   .totals { width: 100%; border-collapse: collapse; }
-  .totals td { font-size: 11px; padding: 1px 0; }
+  .totals td { font-size: 12px; font-weight: 700; padding: 1px 0; }
   .tlbl { width: 55%; }
   .tval { text-align: right; white-space: nowrap; }
 
   /* ---- grand total box (table for reliable print) ---- */
-  .grand-tbl { width: 100%; border-collapse: collapse; border: 2px solid #000; margin: 4px 0; }
-  .grand-tbl td { padding: 3px 5px; font-size: 13px; font-weight: bold; }
+  .grand-tbl { width: 100%; border-collapse: collapse; border: 2.5px solid #000; margin: 4px 0; }
+  .grand-tbl td { padding: 3px 5px; font-size: 14px; font-weight: 900; }
   .grand-tbl .g-val { text-align: right; white-space: nowrap; }
 
   /* ---- paid box ---- */
-  .paid-tbl { width: 100%; border-collapse: collapse; border: 1px solid #000; margin: 3px 0; }
-  .paid-tbl td { padding: 2px 5px; font-size: 11px; }
-  .paid-tbl .p-val { text-align: right; font-weight: bold; white-space: nowrap; }
+  .paid-tbl { width: 100%; border-collapse: collapse; border: 1.5px solid #000; margin: 3px 0; }
+  .paid-tbl td { padding: 2px 5px; font-size: 12px; font-weight: 700; }
+  .paid-tbl .p-val { text-align: right; font-weight: 900; white-space: nowrap; }
 
-  .footer { font-size: 10px; text-align: center; margin-top: 6px; line-height: 1.5; }
-  .powered{ font-size: 10px; text-align: center; margin-top: 2px; }
+  .footer { font-size: 11px; font-weight: 700; text-align: center; margin-top: 6px; line-height: 1.5; }
+  .powered{ font-size: 11px; font-weight: 700; text-align: center; margin-top: 2px; }
 </style>
 </head>
 <body>

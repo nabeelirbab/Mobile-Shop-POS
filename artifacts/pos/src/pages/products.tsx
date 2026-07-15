@@ -42,6 +42,8 @@ export default function Products() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
+  const [priceEditId, setPriceEditId] = useState<number | null>(null);
+  const [priceEditVal, setPriceEditVal] = useState("");
 
   const { data: productsData, isLoading } = useListProducts({ search: searchTerm });
   const { data: categories } = useListCategories();
@@ -107,6 +109,23 @@ export default function Products() {
     });
     setEditingId(product.id);
     setIsModalOpen(true);
+  };
+
+  const handlePriceClick = (product: any) => {
+    setPriceEditId(product.id);
+    setPriceEditVal(String(product.sale_price));
+  };
+
+  const handlePriceSave = (product: any) => {
+    const newPrice = Number(priceEditVal);
+    if (isNaN(newPrice) || newPrice < 0) { setPriceEditId(null); return; }
+    updateProduct.mutate({ id: product.id, data: { ...product, sale_price: newPrice, category_id: product.category_id || undefined, supplier_id: product.supplier_id || undefined } }, {
+      onSuccess: () => {
+        toast({ title: "Price updated", description: `${product.name} → ${formatCurrency(newPrice)}` });
+        setPriceEditId(null);
+        queryClient.invalidateQueries({ queryKey: getListProductsQueryKey() });
+      }
+    });
   };
 
   const handleDelete = (id: number) => {
@@ -192,7 +211,29 @@ export default function Products() {
                     <span className="bg-muted px-2 py-1 rounded text-xs">{product.category_name || '-'}</span>
                   </TableCell>
                   <TableCell className="text-right">{formatCurrency(product.purchase_price)}</TableCell>
-                  <TableCell className="text-right font-medium text-primary">{formatCurrency(product.sale_price)}</TableCell>
+                  <TableCell className="text-right">
+                    {priceEditId === product.id ? (
+                      <div className="flex items-center justify-end gap-1">
+                        <Input
+                          autoFocus
+                          type="number"
+                          value={priceEditVal}
+                          onChange={e => setPriceEditVal(e.target.value)}
+                          onKeyDown={e => { if (e.key === "Enter") handlePriceSave(product); if (e.key === "Escape") setPriceEditId(null); }}
+                          onBlur={() => handlePriceSave(product)}
+                          className="h-7 w-28 text-right text-sm"
+                        />
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => handlePriceClick(product)}
+                        className="font-medium text-primary hover:underline hover:text-primary/80 cursor-pointer"
+                        title="Click to edit price"
+                      >
+                        {formatCurrency(product.sale_price)}
+                      </button>
+                    )}
+                  </TableCell>
                   <TableCell className="text-right">
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${product.stock_qty <= (product.low_stock_threshold || 5) ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'}`}>
                       {product.stock_qty}
