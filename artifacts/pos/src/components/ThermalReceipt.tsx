@@ -70,8 +70,8 @@ export function printReceiptHtml(sale: any, settings: any) {
   .solid    { border-top: 2px solid #000;  margin: 4px 0; }
 
   .logo { height: 200px; max-width: 200px; object-fit: contain; display: block; margin: 0 auto 2px; }
-  .umg-tag  { font-size: 13px; font-weight: bold; letter-spacing: 2px; }
-  .store-name { font-size: 15px; font-weight: bold; }
+  .umg-tag    { font-family: Georgia, 'Times New Roman', serif; font-size: 18px; font-weight: bold; letter-spacing: 3px; }
+  .store-name { font-family: Georgia, 'Times New Roman', serif; font-size: 17px; font-weight: bold; letter-spacing: 1px; }
   .store-info { font-size: 10px; }
 
   /* ---- meta (Date / Invoice / Cashier) ---- */
