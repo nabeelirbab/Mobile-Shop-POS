@@ -69,8 +69,9 @@ export function printReceiptHtml(sale: any, settings: any) {
   .dash     { border-top: 1px dashed #000; margin: 4px 0; }
   .solid    { border-top: 2px solid #000;  margin: 4px 0; }
 
-  .logo { height: 70px; max-width: 80px; object-fit: contain; display: block; margin: 0 auto 3px; }
-  .store-name { font-size: 13px; font-weight: bold; }
+  .logo { height: 100px; max-width: 110px; object-fit: contain; display: block; margin: 0 auto 2px; }
+  .umg-tag  { font-size: 13px; font-weight: bold; letter-spacing: 2px; }
+  .store-name { font-size: 15px; font-weight: bold; }
   .store-info { font-size: 10px; }
 
   /* ---- meta (Date / Invoice / Cashier) ---- */
@@ -111,6 +112,7 @@ export function printReceiptHtml(sale: any, settings: any) {
 <!-- HEADER -->
 <div class="center">
   <img src="${logoSrc}" class="logo" alt="logo" />
+  <div class="umg-tag">UMG</div>
   <div class="store-name">${storeName}</div>
   ${address  ? `<div class="store-info">${address}</div>` : ""}
   ${phone    ? `<div class="store-info">Tel: ${phone}${whatsapp ? " | WA: " + whatsapp : ""}</div>` : ""}

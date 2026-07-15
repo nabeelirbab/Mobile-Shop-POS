@@ -186,61 +186,61 @@ function seedIfEmpty() {
   db.prepare("INSERT INTO users (username, password_hash, name, role) VALUES (?,?,?,?)").run("admin", adminHash, "Administrator", "admin");
   db.prepare("INSERT INTO users (username, password_hash, name, role) VALUES (?,?,?,?)").run("cashier", cashierHash, "Ali Hassan", "cashier");
 
-  const cats = ["Mobile Phones", "Accessories", "Chargers", "Headphones", "Covers", "Power Banks", "Smart Watches", "Others"];
+  const cats = ["Smartphones", "Feature Phones", "Accessories", "Chargers", "Covers", "Others"];
   for (const c of cats) {
     db.prepare("INSERT INTO categories (name) VALUES (?)").run(c);
   }
+  // cat IDs: Smartphones=1, Feature Phones=2
 
-  db.prepare("INSERT INTO suppliers (name, company, mobile, address) VALUES (?,?,?,?)").run("Tech Distributors", "Tech Dist Pvt Ltd", "03001234567", "Lahore, Pakistan");
-  db.prepare("INSERT INTO suppliers (name, company, mobile, address) VALUES (?,?,?,?)").run("Mobile World", "Mobile World Ltd", "03111234567", "Karachi, Pakistan");
+  db.prepare("INSERT INTO suppliers (name, company, mobile, address) VALUES (?,?,?,?)").run("Mobile Distributor", "Mobile Dist Sambrial", "03001234567", "Sambrial, Pakistan");
 
+  // barcode, name, brand, model, category_id, color, imei, purchase_price, sale_price, stock_qty, supplier_id, warranty, image, notes, low_stock_threshold
   const products: any[][] = [
-    ["8901234567890", "Samsung Galaxy A15", "Samsung", "A15", 1, "Blue", null, 35000, 42000, 15, 1, "1 Year", null, null, 3],
-    ["8901234567891", "iPhone 15", "Apple", "15", 1, "Black", null, 180000, 215000, 5, 1, "1 Year", null, null, 2],
-    ["8901234567892", "Type-C Cable", "Anker", "A8452", 3, "White", null, 200, 600, 50, 2, "6 Months", null, null, 10],
-    ["8901234567893", "Samsung Back Cover", "Samsung", "A15 Cover", 5, "Black", null, 150, 500, 30, 2, "3 Months", null, null, 10],
-    ["8901234567894", "Wireless Earbuds", "JBL", "Wave 100", 4, "White", null, 1500, 3500, 8, 1, "6 Months", null, null, 3],
-    ["8901234567895", "Power Bank 20000mAh", "Romoss", "20000", 6, "Black", null, 2000, 4500, 12, 2, "1 Year", null, null, 5],
-    ["8901234567896", "Smart Watch Pro", "Xiaomi", "Mi Band 8", 7, "Silver", null, 4000, 8500, 2, 1, "6 Months", null, null, 3],
-    ["8901234567897", "Fast Charger 65W", "Baseus", "65W", 3, "White", null, 800, 1800, 25, 2, "6 Months", null, null, 8],
+    // ── Smartphones ──────────────────────────────────────────────────────
+    ["HP10001",  "Honor Play 10",     "Honor",    "Play 10",    1, null, null,  22000,  25000,  5, 1, "1 Year",    null, null, 2],
+    ["SGA05001", "Samsung Galaxy A05","Samsung",  "Galaxy A05", 1, null, null,  19000,  22000,  4, 1, "1 Year",    null, null, 2],
+    ["VY04001",  "Vivo Y04",          "Vivo",     "Y04",        1, null, null,  25000,  28000,  3, 1, "1 Year",    null, null, 2],
+    ["OA5I001",  "Oppo A5i",          "Oppo",     "A5i",        1, null, null,  23000,  26000,  3, 1, "1 Year",    null, null, 2],
+    ["RD15C001", "Redmi 15C",         "Xiaomi",   "15C",        1, null, null,  21000,  24000,  5, 1, "1 Year",    null, null, 2],
+    ["RD14C001", "Redmi 14C",         "Xiaomi",   "14C",        1, null, null,  19000,  22000,  4, 1, "1 Year",    null, null, 2],
+    ["RDA3001",  "Redmi A3",          "Xiaomi",   "A3",         1, null, null,  17500,  20000,  6, 1, "1 Year",    null, null, 2],
+    ["RN60X001", "Realme Note 60x",   "Realme",   "Note 60x",   1, null, null,  27000,  30000,  2, 1, "1 Year",    null, null, 2],
+    ["RN60001",  "Realme Note 60",    "Realme",   "Note 60",    1, null, null,  25000,  28000,  3, 1, "1 Year",    null, null, 2],
+    ["SN15001",  "Sparx Neo 15",      "Sparx",    "Neo 15",     1, null, null,  16000,  18000,  4, 1, "6 Months",  null, null, 2],
+    ["IS10001",  "Infinix Smart 10",  "Infinix",  "Smart 10",   1, null, null,  17500,  20000,  3, 1, "1 Year",    null, null, 2],
+    ["TSG001",   "Tecno Spark Go",    "Tecno",    "Spark Go",   1, null, null,  15500,  18000,  4, 1, "6 Months",  null, null, 2],
+    ["TV40S001", "Tecno V40s",        "Tecno",    "V40s",       1, null, null,  19500,  22000,  2, 1, "1 Year",    null, null, 2],
+    ["IA50C001", "Itel A50C",         "Itel",     "A50C",       1, null, null,  14000,  16000,  5, 1, "6 Months",  null, null, 2],
+    ["IA470001", "Itel A470",         "Itel",     "A470",       1, null, null,  13000,  15000,  4, 1, "6 Months",  null, null, 2],
+    ["IC100001", "Itel City 100",     "Itel",     "City 100",   1, null, null,  10500,  12000,  5, 1, "6 Months",  null, null, 2],
+    ["GFE700001","Gfive 4G E700",     "Gfive",    "E700",       1, null, null,   7000,   8000,  3, 1, "6 Months",  null, null, 2],
+    // ── Feature Phones ───────────────────────────────────────────────────
+    ["FLK001",   "Falak",             "Falak",    "Falak",      2, null, null,   1200,   1500, 10, 1, "3 Months",  null, null, 3],
+    ["2EYE001",  "2EYE",              "2EYE",     "2EYE",       2, null, null,   1200,   1500,  8, 1, "3 Months",  null, null, 3],
+    ["GFGOLD01", "Gfive Gold",        "Gfive",    "Gold",       2, null, null,    800,   1000, 12, 1, "3 Months",  null, null, 3],
+    ["GFC108",   "Gfive C108",        "Gfive",    "C108",       2, null, null,    950,   1200,  8, 1, "3 Months",  null, null, 3],
+    ["GFHERO01", "Gfive Hero",        "Gfive",    "Hero",       2, null, null,   1200,   1500, 10, 1, "3 Months",  null, null, 3],
+    ["GFBRAV01", "Gfive Bravo",       "Gfive",    "Bravo",      2, null, null,    950,   1200,  8, 1, "3 Months",  null, null, 3],
+    ["GFTIG01",  "Gfive Tiger",       "Gfive",    "Tiger",      2, null, null,   1200,   1500,  7, 1, "3 Months",  null, null, 3],
+    ["GFSMART1", "Gfive Smart",       "Gfive",    "Smart",      2, null, null,   1200,   1500,  6, 1, "3 Months",  null, null, 3],
+    ["PWR17001", "Power 17",          "Power",    "Power 17",   2, null, null,   1200,   1500,  8, 1, "3 Months",  null, null, 3],
+    ["IT2165",   "it2165",            "it",       "it2165",     2, null, null,   1500,   1800,  6, 1, "3 Months",  null, null, 3],
+    ["YLV200FM", "Yelain V200s FM",   "Yelain",   "V200s FM",   2, null, null,   1200,   1500,  9, 1, "3 Months",  null, null, 3],
+    ["GURPWR1",  "Guru Power",        "Guru",     "Guru Power", 2, null, null,   1200,   1500, 10, 1, "3 Months",  null, null, 3],
   ];
   const insertProduct = db.prepare("INSERT INTO products (barcode,name,brand,model,category_id,color,imei,purchase_price,sale_price,stock_qty,supplier_id,warranty,image,notes,low_stock_threshold) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
   for (const p of products) {
     insertProduct.run(...p);
   }
 
-  db.prepare("INSERT INTO customers (name, mobile, address) VALUES (?,?,?)").run("Ali Ahmad", "03001234567", "Main Bazar Lahore");
-  db.prepare("INSERT INTO customers (name, mobile, address) VALUES (?,?,?)").run("Sara Khan", "03111234567", "Gulberg, Lahore");
   db.prepare("INSERT INTO customers (name, mobile, address) VALUES (?,?,?)").run("Walk-in Customer", null, null);
 
   db.prepare("UPDATE settings SET store_name=?, owner_name=?, address=?, phone=?, whatsapp=?, footer_message=?, logo=? WHERE id=1").run(
-    "Umair Mobile Gallery UMG", "Umair", "Street no 1 Mor Sambrial", "03349999602",
+    "Umair Mobile Gallery", "Umair", "Street no 1 Mor Sambrial", "03349999602",
     "03349999602",
     "Thank You For Shopping! Visit Again.",
     "/umg-logo.jpg"
   );
-
-  const today = new Date().toISOString().split("T")[0];
-  const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0];
-
-  const insertSale = db.prepare("INSERT INTO sales (invoice_no,customer_id,cashier_id,subtotal,discount_percent,discount_amount,tax_percent,tax_amount,grand_total,paid_amount,return_amount,payment_method,status,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-  const insertSaleItem = db.prepare("INSERT INTO sale_items (sale_id,product_id,product_name,barcode,quantity,unit_price,discount,total) VALUES (?,?,?,?,?,?,?,?)");
-
-  const s1 = insertSale.run("INV-00001", 1, 1, 43700, 0, 700, 0, 0, 43000, 45000, 2000, "cash", "completed", `${today}T10:30:00`);
-  const s1id = Number(s1.lastInsertRowid);
-  insertSaleItem.run(s1id, 1, "Samsung Galaxy A15", "8901234567890", 1, 42000, 0, 42000);
-  insertSaleItem.run(s1id, 3, "Type-C Cable", "8901234567892", 2, 600, 0, 1200);
-  insertSaleItem.run(s1id, 4, "Samsung Back Cover", "8901234567893", 1, 500, 0, 500);
-
-  const s2 = insertSale.run("INV-00002", 2, 1, 3500, 0, 0, 0, 0, 3500, 3500, 0, "easypaisa", "completed", `${today}T14:00:00`);
-  insertSaleItem.run(Number(s2.lastInsertRowid), 5, "Wireless Earbuds", "8901234567894", 1, 3500, 0, 3500);
-
-  const s3 = insertSale.run("INV-00003", 1, 1, 8500, 5, 425, 0, 0, 8075, 8075, 0, "card", "completed", `${yesterday}T11:00:00`);
-  insertSaleItem.run(Number(s3.lastInsertRowid), 7, "Smart Watch Pro", "8901234567896", 1, 8500, 0, 8500);
-
-  db.prepare("INSERT INTO expenses (category,description,amount,date) VALUES (?,?,?,?)").run("Shop Rent", "Monthly rent", 25000, today);
-  db.prepare("INSERT INTO expenses (category,description,amount,date) VALUES (?,?,?,?)").run("Electricity", "Electricity bill", 5000, today);
-  db.prepare("INSERT INTO expenses (category,description,amount,date) VALUES (?,?,?,?)").run("Internet", "Monthly internet", 2500, yesterday);
 
   logger.info("Seeding complete. Admin: admin/admin123, Cashier: cashier/cashier123");
 }
