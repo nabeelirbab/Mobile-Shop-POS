@@ -78,8 +78,11 @@ router.post("/sales", requireAuth, (req, res) => {
         const prod = db.prepare("SELECT * FROM products WHERE id = ?").get(item.product_id) as any;
         if (!prod) throw new Error(`Product ${item.product_id} not found`);
         const itemTotal = item.unit_price * item.quantity - item.discount;
+        const saleProductName = (typeof item.product_name === "string" && item.product_name.trim())
+          ? item.product_name.trim()
+          : prod.name;
         db.prepare("INSERT INTO sale_items (sale_id,product_id,product_name,barcode,quantity,unit_price,discount,total) VALUES (?,?,?,?,?,?,?,?)")
-          .run(saleId, item.product_id, prod.name, prod.barcode ?? null, item.quantity, item.unit_price, item.discount, itemTotal);
+          .run(saleId, item.product_id, saleProductName, prod.barcode ?? null, item.quantity, item.unit_price, item.discount, itemTotal);
         db.prepare("UPDATE products SET stock_qty = stock_qty - ? WHERE id = ?").run(item.quantity, item.product_id);
       }
       if (payment_method === "credit" && customer_id) {
