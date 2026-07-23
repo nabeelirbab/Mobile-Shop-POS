@@ -7,8 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatCurrency } from "@/lib/utils";
-import { Search, Plus, Minus, Trash2, ReceiptText, User as UserIcon } from "lucide-react";
+import { Search, Plus, Minus, Trash2, ReceiptText, User as UserIcon, Package, Pencil } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { printReceipt } from "@/components/ThermalReceipt";
 import { SalePaymentMethod, SaleInputPaymentMethod } from "@workspace/api-client-react";
@@ -16,9 +18,11 @@ import { SalePaymentMethod, SaleInputPaymentMethod } from "@workspace/api-client
 interface CartItem {
   product_id: number;
   product_name: string;
+  original_name: string;
   barcode?: string | null;
   quantity: number;
   unit_price: number;
+  original_price: number;
   stock_qty: number;
   discount: number;
 }
@@ -36,6 +40,9 @@ export default function Pos() {
   const [taxPercent, setTaxPercent] = useState<number>(0);
   const [paidAmount, setPaidAmount] = useState<number>(0);
   const [paymentMethod, setPaymentMethod] = useState<SaleInputPaymentMethod>("cash");
+  const [editingItem, setEditingItem] = useState<CartItem | null>(null);
+  const [editName, setEditName] = useState("");
+  const [editPrice, setEditPrice] = useState("");
 
   // Debounce search
   useEffect(() => {
@@ -105,9 +112,11 @@ export default function Pos() {
       return [...prev, {
         product_id: product.id,
         product_name: product.name,
+        original_name: product.name,
         barcode: product.barcode,
         quantity: 1,
         unit_price: product.sale_price,
+        original_price: product.sale_price,
         stock_qty: product.stock_qty,
         discount: 0
       }];
@@ -133,6 +142,32 @@ export default function Pos() {
 
   const removeFromCart = (productId: number) => {
     setCart(prev => prev.filter(item => item.product_id !== productId));
+  };
+
+  const openEditItem = (item: CartItem) => {
+    setEditingItem(item);
+    setEditName(item.product_name);
+    setEditPrice(String(item.unit_price));
+  };
+
+  const saveEditItem = () => {
+    if (!editingItem) return;
+    const trimmedName = editName.trim();
+    const parsedPrice = parseFloat(editPrice);
+    if (!trimmedName) {
+      toast({ title: "Product name is required", variant: "destructive" });
+      return;
+    }
+    if (!Number.isFinite(parsedPrice) || parsedPrice < 0) {
+      toast({ title: "Invalid price", description: "Enter a valid selling price.", variant: "destructive" });
+      return;
+    }
+    setCart(prev => prev.map(item =>
+      item.product_id === editingItem.product_id
+        ? { ...item, product_name: trimmedName, unit_price: parsedPrice }
+        : item
+    ));
+    setEditingItem(null);
   };
 
   const clearCart = () => {
@@ -187,6 +222,7 @@ export default function Pos() {
         customer_id: customerId,
         items: cart.map(item => ({
           product_id: item.product_id,
+          product_name: item.product_name,
           quantity: item.quantity,
           unit_price: item.unit_price,
           discount: item.discount
@@ -290,7 +326,7 @@ export default function Pos() {
                   <TableHead className="w-[50%]">Item</TableHead>
                   <TableHead className="text-center">Qty</TableHead>
                   <TableHead className="text-right">Price</TableHead>
-                  <TableHead></TableHead>
+                  <TableHead className="w-20"></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -306,6 +342,9 @@ export default function Pos() {
                       <TableCell>
                         <div className="font-medium text-sm line-clamp-1">{item.product_name}</div>
                         <div className="text-xs text-muted-foreground">{formatCurrency(item.unit_price)}</div>
+                        {(item.product_name !== item.original_name || item.unit_price !== item.original_price) && (
+                          <div className="text-[10px] text-amber-600 dark:text-amber-400 mt-0.5">Edited for this sale</div>
+                        )}
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center justify-center gap-1">
@@ -319,12 +358,17 @@ export default function Pos() {
                         </div>
                       </TableCell>
                       <TableCell className="text-right font-medium">
-                        {formatCurrency(item.quantity * item.unit_price)}
+                        {formatCurrency(item.quantity * item.unit_price - item.discount)}
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive/10" onClick={() => removeFromCart(item.product_id)}>
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
+                        <div className="flex items-center justify-end gap-0.5">
+                          <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary" onClick={() => openEditItem(item)} title="Edit Item">
+                            <Pencil className="w-4 h-4" />
+                          </Button>
+                          <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive/10" onClick={() => removeFromCart(item.product_id)}>
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))
@@ -420,9 +464,44 @@ export default function Pos() {
           </div>
         </div>
       </div>
+
+      <Dialog open={!!editingItem} onOpenChange={(open) => !open && setEditingItem(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Item</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <Label htmlFor="edit-product-name">Product Name</Label>
+              <Input
+                id="edit-product-name"
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                placeholder="Product name for this invoice"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-product-price">Selling Price</Label>
+              <Input
+                id="edit-product-price"
+                type="number"
+                min="0"
+                step="0.01"
+                value={editPrice}
+                onChange={(e) => setEditPrice(e.target.value)}
+                placeholder="0.00"
+              />
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Changes apply only to this invoice. The original product in inventory is not modified.
+            </p>
+          </div>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => setEditingItem(null)}>Cancel</Button>
+            <Button onClick={saveEditItem}>Save Changes</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </MainLayout>
   );
 }
-
-// Needed imports
-import { Package } from "lucide-react";

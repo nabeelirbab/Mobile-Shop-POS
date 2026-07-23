@@ -8,6 +8,8 @@
 
 export interface SaleItemInput {
   product_id: number;
+  /** Optional per-sale name override; does not update the product catalog */
+  product_name?: string;
   quantity: number;
   unit_price: number;
   discount: number;
