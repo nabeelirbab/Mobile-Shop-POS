@@ -1426,6 +1426,9 @@ components:
       properties:
         product_id:
           type: integer
+        product_name:
+          type: string
+          description: Optional per-sale name override; does not update the product catalog
         quantity:
           type: integer
         unit_price:
